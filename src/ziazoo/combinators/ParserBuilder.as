@@ -7,8 +7,6 @@
  */
 package ziazoo.combinators
 {
-  import avmplus.accessorXml;
-
   import flash.utils.Dictionary;
 
   public class ParserBuilder

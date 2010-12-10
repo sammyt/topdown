@@ -19,15 +19,11 @@ package
 
     /*
      Issues:
-     - 1) need to specify word() which makes simple grammar verbose
-     - 2) static functions are not cool, cant intercept parser creation
-     - 3) hard to read
-
      4) no means for AST creation
      5) no error handling
-     6) pass is a fail when whole string is not read successfully? yes case 1
-
-     a 4) How to generate an AST?
+        - when zeroOrMore
+        - when full string not passed
+        
      */
 
     private function newApi():void
