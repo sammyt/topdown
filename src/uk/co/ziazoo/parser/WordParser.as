@@ -5,7 +5,7 @@
  * Time: 16:41
  * To change this template use File | Settings | File Templates.
  */
-package ziazoo.combinators
+package uk.co.ziazoo.parser
 {
   public class WordParser extends AbstractParser
   {
@@ -16,16 +16,17 @@ package ziazoo.combinators
       this.w = w;
     }
 
-    override public function parse(parserState:ParserState):IResult
+    override public function parse(parserState:ParserState):Result
     {
       var chars:String = parserState.subStr(w.length);
 
-      if(chars == w)
+      if (chars == w)
       {
         parserState.move(w.length);
-        return new Success(w, chars);
+        return new Result(true, apply(w));
       }
-      return new Failure("Expected [" + w + "] received [" + chars + "]");
+      // TODO : new Failure("Expected [" + w + "] received [" + chars + "]");
+      return new Result(false);
     }
   }
 }

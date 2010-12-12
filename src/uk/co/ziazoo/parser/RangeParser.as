@@ -5,7 +5,7 @@
  * Time: 15:58
  * To change this template use File | Settings | File Templates.
  */
-package ziazoo.combinators
+package uk.co.ziazoo.parser
 {
   public class RangeParser extends AbstractParser
   {
@@ -18,16 +18,17 @@ package ziazoo.combinators
       this.end = end;
     }
 
-    override public function parse(parserState:ParserState):IResult
+    override public function parse(parserState:ParserState):Result
     {
       var ch:String = parserState.at(0);
       if (ch >= start && ch <= end)
       {
         parserState.incr();
 
-        return new Success(ch, ch);
+        return new Result(true, apply(ch));
       }
-      return new Failure("Expected something between [" + start + " - " + end + "] but got" + ch);
+      // TODO: new Failure("Expected something between [" + start + " - " + end + "] but got" + ch);
+      return new Result(false);
     }
   }
 }

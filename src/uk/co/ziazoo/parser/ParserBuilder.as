@@ -5,7 +5,7 @@
  * Time: 17:38
  * To change this template use File | Settings | File Templates.
  */
-package ziazoo.combinators
+package uk.co.ziazoo.parser
 {
   import flash.utils.Dictionary;
 
@@ -13,7 +13,7 @@ package ziazoo.combinators
   {
     private var futures:Dictionary;
 
-    public function   ParserBuilder()
+    public function ParserBuilder()
     {
       futures = new Dictionary();
     }

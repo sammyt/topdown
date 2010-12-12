@@ -5,17 +5,17 @@
  * Time: 16:30
  * To change this template use File | Settings | File Templates.
  */
-package ziazoo.combinators
+package uk.co.ziazoo.parser
 {
   public class FutureParser extends AbstractParser
   {
     public var parser:IParser;
-    
+
     public function FutureParser()
     {
     }
 
-    override public function parse(parserState:ParserState):IResult
+    override public function parse(parserState:ParserState):Result
     {
       return parser.parse(parserState);
     }

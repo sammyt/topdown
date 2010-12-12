@@ -5,28 +5,27 @@
  * Time: 20:53
  * To change this template use File | Settings | File Templates.
  */
-package ziazoo.combinators
+package uk.co.ziazoo.parser
 {
   public class RegExParser extends AbstractParser
   {
     private var re:RegExp;
-    
+
     public function RegExParser(re:RegExp)
     {
       this.re = re;
     }
 
-    override public function parse(parserState:ParserState):IResult
+    override public function parse(parserState:ParserState):Result
     {
-      var input:String = re.exec(parserState.subStr(parserState.len));
-
       var ans:Array = re.exec(parserState.subStr(parserState.len));
-      if(ans && ans.length)
+      if (ans && ans.length)
       {
         parserState.move(ans[0].length);
-        return new Success(ans[0], input);
+        return new Result(true, apply(ans[0]));
       }
-      return new Failure("Pattern not found");
+      // TODO: new Failure("Pattern not found");
+      return new Result(false);
     }
   }
 }

@@ -5,7 +5,7 @@
  * Time: 15:53
  * To change this template use File | Settings | File Templates.
  */
-package ziazoo.combinators
+package uk.co.ziazoo.parser
 {
   public class ParserState
   {
@@ -19,7 +19,7 @@ package ziazoo.combinators
 
     public function at(i:int):String
     {
-      return input.charAt(i + index);  
+      return input.charAt(i + index);
     }
 
     public function subStr(len:int):String

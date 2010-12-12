@@ -5,12 +5,12 @@
  * Time: 15:57
  * To change this template use File | Settings | File Templates.
  */
-package ziazoo.combinators
+package uk.co.ziazoo.parser
 {
   public interface IParser
   {
-    function parse(parserState:ParserState):IResult;
+    function parse(parserState:ParserState):Result;
 
-    function onAction(factory:Function):void;
+    function set extractor(extractor:Extractor):void;
   }
 }

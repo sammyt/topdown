@@ -5,7 +5,7 @@
  * Time: 19:15
  * To change this template use File | Settings | File Templates.
  */
-package ziazoo.combinators
+package uk.co.ziazoo.parser
 {
   public class WhitespaceParser extends AbstractParser
   {
@@ -18,10 +18,10 @@ package ziazoo.combinators
       this.parser = parser;
     }
 
-    override public function parse(parserState:ParserState):IResult
+    override public function parse(parserState:ParserState):Result
     {
       p.parse(parserState);
-      
+
       return parser.parse(parserState);
     }
   }

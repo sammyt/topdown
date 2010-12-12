@@ -5,7 +5,7 @@
  * Time: 16:20
  * To change this template use File | Settings | File Templates.
  */
-package ziazoo.combinators
+package uk.co.ziazoo.parser
 {
   public class EitherParser extends AbstractParser
   {
@@ -18,17 +18,24 @@ package ziazoo.combinators
       this.second = second;
     }
 
-    override public function parse(parserState:ParserState):IResult
+    override public function parse(parserState:ParserState):Result
     {
-      var result:IResult = first.parse(parserState);
-      if(result is Success)
+      var result:Result = first.parse(parserState);
+      if (result.success)
       {
-        return result;
+        return new Result(true, result.instance);
       }
       else
       {
-        return second.parse(parserState);
+        result = second.parse(parserState);
+
+        if (result.success)
+        {
+          return new Result(true, result.instance);
+        }
       }
+      // TODO: call fail
+      return new Result(false);
     }
   }
 }

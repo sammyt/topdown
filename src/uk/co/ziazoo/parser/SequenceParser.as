@@ -5,7 +5,7 @@
  * Time: 16:37
  * To change this template use File | Settings | File Templates.
  */
-package ziazoo.combinators
+package uk.co.ziazoo.parser
 {
   public class SequenceParser extends AbstractParser
   {
@@ -16,24 +16,31 @@ package ziazoo.combinators
       this.parsers = parsers;
     }
 
-    override public function parse(parserState:ParserState):IResult
+    override public function parse(parserState:ParserState):Result
     {
-      var startIndex:int = parserState.index;
       var all:Array = [];
 
       for each(var parser:IParser in parsers)
       {
-        var result:IResult = parser.parse(parserState);
-        if (result is Success)
+        var result:Result = parser.parse(parserState);
+        if (result.success)
         {
-          all.push(result);
+          all.push(result.instance);
         }
         else
         {
-          return result;
+          return new Result(false);
         }
       }
-      return new Success(all, parserState.subStrFrom(startIndex, parserState.index));
+      if (all.length == 0)
+      {
+        return new Result(false);
+      }
+      if (all.length == 1)
+      {
+        return new Result(true, apply(all[0]));
+      }
+      return new Result(true, apply(all));
     }
   }
 }
