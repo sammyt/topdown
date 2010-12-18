@@ -3,8 +3,8 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>uk.co.ziazoo.</groupId>
-  <artifactId>parser</artifactId>
+  <groupId>uk.co.ziazoo</groupId>
+  <artifactId>topdown</artifactId>
   <version>0.1-SNAPSHOT</version>
   <packaging>swc</packaging>
   <name>actionscript parser combinators</name>
@@ -34,12 +34,6 @@
     </plugins>
   </build>
   <dependencies>
-    <dependency>
-      <groupId>uk.co.ziazoo</groupId>
-      <artifactId>fussy</artifactId>
-      <version>0.2</version>
-      <type>swc</type>
-    </dependency>
     <dependency>
       <groupId>com.adobe.flex.framework</groupId>
       <artifactId>flex-framework</artifactId>
