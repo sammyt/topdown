@@ -22,7 +22,7 @@ package uk.co.ziazoo.parser
     [Test]
     public function parserNumericExpr():void
     {
-      var b:IParserBuilder = new ParserBuilder();
+      var b:IParserBuilder = new MemoTableBuilder(new ParserBuilder());
 
       var value:IParser = b.either(
         b.oneOrMore(b.range("0", "9")),
@@ -53,7 +53,7 @@ package uk.co.ziazoo.parser
         );
 
       var expr:IParser = b.satisfyFuture("expr", sum);
-      var input:String = "1+2+3-4+1+2*3-(4/1+2*3)-4*1+2*3-4";
+      var input:String = "1+2+3-(4+1/5/6/(7*7))+2*3-(4/1+2*3)-4*1+2*3-4";
       var ps:ParserState = new ParserState(input);
       var result:Object = expr.parse(ps);
 

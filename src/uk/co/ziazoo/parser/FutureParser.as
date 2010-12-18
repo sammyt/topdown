@@ -15,7 +15,7 @@ package uk.co.ziazoo.parser
     {
     }
 
-    override public function parse(parserState:ParserState):Result
+    override public function parse(parserState:IParserState):Result
     {
       return parser.parse(parserState);
     }

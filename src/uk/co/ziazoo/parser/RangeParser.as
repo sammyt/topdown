@@ -18,7 +18,7 @@ package uk.co.ziazoo.parser
       this.end = end;
     }
 
-    override public function parse(parserState:ParserState):Result
+    override public function parse(parserState:IParserState):Result
     {
       var ch:String = parserState.at(0);
       if (ch >= start && ch <= end)

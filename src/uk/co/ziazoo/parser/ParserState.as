@@ -7,24 +7,26 @@
  */
 package uk.co.ziazoo.parser
 {
-  public class ParserState
+  public class ParserState implements IParserState
   {
     private var input:String;
-    public var index:int = 0;
+    public var _index:int = 0;
+    private var _memoTable:IMemoTable;
 
     public function ParserState(input:String)
     {
       this.input = input;
+      _memoTable = new MemoTable();
     }
 
     public function at(i:int):String
     {
-      return input.charAt(i + index);
+      return input.charAt(i + _index);
     }
 
     public function subStr(len:int):String
     {
-      return input.substr(index, len);
+      return input.substr(_index, len);
     }
 
     public function subStrFrom(start:int, end:int):String
@@ -34,17 +36,27 @@ package uk.co.ziazoo.parser
 
     public function incr():void
     {
-      index ++;
+      _index ++;
     }
 
     public function move(i:int):void
     {
-      index += i;
+      _index += i;
     }
 
     public function get len():int
     {
-      return input.length - index;
+      return input.length - _index;
+    }
+
+    public function get memo():IMemoTable
+    {
+      return _memoTable;
+    }
+
+    public function get index():int
+    {
+      return _index;
     }
   }
 }

@@ -16,7 +16,7 @@ package uk.co.ziazoo.parser
       this.w = w;
     }
 
-    override public function parse(parserState:ParserState):Result
+    override public function parse(parserState:IParserState):Result
     {
       var chars:String = parserState.subStr(w.length);
 

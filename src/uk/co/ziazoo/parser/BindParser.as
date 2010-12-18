@@ -22,7 +22,7 @@ package uk.co.ziazoo.parser
       this.name = name;
     }
 
-    override public function parse(parserState:ParserState):Result
+    override public function parse(parserState:IParserState):Result
     {
       var result:Result = parser.parse(parserState);
       if (result.success)

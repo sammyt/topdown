@@ -18,7 +18,7 @@ package uk.co.ziazoo.parser
       this.second = second;
     }
 
-    override public function parse(parserState:ParserState):Result
+    override public function parse(parserState:IParserState):Result
     {
       var result:Result = first.parse(parserState);
       if (result.success)

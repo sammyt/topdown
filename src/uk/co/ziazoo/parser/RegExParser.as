@@ -16,7 +16,7 @@ package uk.co.ziazoo.parser
       this.re = re;
     }
 
-    override public function parse(parserState:ParserState):Result
+    override public function parse(parserState:IParserState):Result
     {
       var ans:Array = re.exec(parserState.subStr(parserState.len));
       if (ans && ans.length)

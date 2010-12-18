@@ -18,7 +18,7 @@ package uk.co.ziazoo.parser
       this.seperator = seperator;
     }
 
-    override public function parse(parserState:ParserState):Result
+    override public function parse(parserState:IParserState):Result
     {
       return new SequenceParser([parser,
         new ZeroOrMoreParser(

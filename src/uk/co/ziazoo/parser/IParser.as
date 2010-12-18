@@ -11,7 +11,9 @@ package uk.co.ziazoo.parser
   {
     function get id():String;
 
-    function parse(parserState:ParserState):Result;
+    function set id(value:String):void;
+
+    function parse(parserState:IParserState):Result;
 
     function extractor(extractor:Object):IParser;
   }

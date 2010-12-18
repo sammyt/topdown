@@ -12,12 +12,13 @@ package uk.co.ziazoo.parser
     private var _extractor:Extractor;
     private var _value:Object;
     private var _callback:Function;
+    private var _id:String;
 
     public function AbstractParser()
     {
     }
 
-    public function parse(parserState:ParserState):Result
+    public function parse(parserState:IParserState):Result
     {
       return null;
     }
@@ -58,7 +59,12 @@ package uk.co.ziazoo.parser
 
     public function get id():String
     {
-      return null;
+      return _id;
+    }
+
+    public function set id(value:String):void
+    {
+      _id = value;
     }
   }
 }

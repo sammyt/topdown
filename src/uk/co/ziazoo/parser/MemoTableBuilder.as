@@ -10,6 +10,7 @@ package uk.co.ziazoo.parser
   public class MemoTableBuilder implements IParserBuilder
   {
     private var builder:IParserBuilder;
+    private var idCount:int = 0;
 
     public function MemoTableBuilder(builder:IParserBuilder)
     {
@@ -23,6 +24,7 @@ package uk.co.ziazoo.parser
 
     private function memorize(parser:IParser):IParser
     {
+      parser.id = "ID" + idCount++;
       return new MemoTableParser(parser);
     }
 

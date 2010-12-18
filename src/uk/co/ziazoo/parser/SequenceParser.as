@@ -16,7 +16,7 @@ package uk.co.ziazoo.parser
       this.parsers = parsers;
     }
 
-    override public function parse(parserState:ParserState):Result
+    override public function parse(parserState:IParserState):Result
     {
       var all:Array = [];
 
