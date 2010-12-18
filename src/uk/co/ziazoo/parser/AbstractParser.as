@@ -10,6 +10,8 @@ package uk.co.ziazoo.parser
   public class AbstractParser implements IParser
   {
     private var _extractor:Extractor;
+    private var _value:Object;
+    private var _callback:Function;
 
     public function AbstractParser()
     {
@@ -22,16 +24,41 @@ package uk.co.ziazoo.parser
 
     protected function apply(args:Object):Object
     {
-      if (_extractor)
+      if (_value != null)
+      {
+        return _value;
+      }
+      else if (_callback != null)
+      {
+        return _callback(args)
+      }
+      else if (_extractor != null)
       {
         return _extractor.extract(args);
       }
       return args;
     }
 
-    public function set extractor(extractor:Extractor):void
+    public function extractor(extractor:Object):IParser
     {
-      _extractor = extractor;
+      if (extractor is Extractor)
+      {
+        _extractor = extractor as Extractor;
+      }
+      else if (extractor is Function)
+      {
+        _callback = extractor as Function;
+      }
+      else
+      {
+        _value = extractor;
+      }
+      return this;
+    }
+
+    public function get id():String
+    {
+      return null;
     }
   }
 }

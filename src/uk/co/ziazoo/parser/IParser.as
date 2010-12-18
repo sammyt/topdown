@@ -9,8 +9,10 @@ package uk.co.ziazoo.parser
 {
   public interface IParser
   {
+    function get id():String;
+
     function parse(parserState:ParserState):Result;
 
-    function set extractor(extractor:Extractor):void;
+    function extractor(extractor:Object):IParser;
   }
 }

@@ -9,7 +9,7 @@ package uk.co.ziazoo.parser
 {
   import flash.utils.Dictionary;
 
-  public class ParserBuilder
+  public class ParserBuilder implements IParserBuilder
   {
     private var futures:Dictionary;
 
@@ -18,27 +18,27 @@ package uk.co.ziazoo.parser
       futures = new Dictionary();
     }
 
-    public function range(start:String, end:String):RangeParser
+    public function range(start:String, end:String):IParser
     {
       return new RangeParser(start, end);
     }
 
-    public function oneOrMore(parser:Object):OneOrMoreParser
+    public function oneOrMore(parser:Object):IParser
     {
       return new OneOrMoreParser(toParser(parser));
     }
 
-    public function future(name:String):FutureParser
+    public function future(name:String):IParser
     {
       return futures[name] = new FutureParser();
     }
 
-    public function either(first:Object, second:Object):EitherParser
+    public function either(first:Object, second:Object):IParser
     {
       return new EitherParser(toParser(first), toParser(second));
     }
 
-    public function sequence(...args):SequenceParser
+    public function sequence(...args):IParser
     {
       var parsers:Array = [];
       for each(var p:Object in args)
@@ -48,7 +48,7 @@ package uk.co.ziazoo.parser
       return new SequenceParser(parsers);
     }
 
-    public function zeroOrMore(parser:Object):ZeroOrMoreParser
+    public function zeroOrMore(parser:Object):IParser
     {
       return new ZeroOrMoreParser(toParser(parser));
     }
@@ -58,12 +58,12 @@ package uk.co.ziazoo.parser
       return FutureParser(futures[name]).parser = parser;
     }
 
-    public function terminal(chars:String):WordParser
+    public function terminal(chars:String):IParser
     {
       return new WordParser(chars);
     }
 
-    private function toParser(obj:Object):IParser
+    public function toParser(obj:Object):IParser
     {
       if (obj is String)
       {
@@ -72,7 +72,7 @@ package uk.co.ziazoo.parser
       return obj as IParser;
     }
 
-    public function chose(...args):ChoseParser
+    public function chose(...args):IParser
     {
       var parsers:Array = [];
       for each(var p:Object in args)
@@ -82,17 +82,17 @@ package uk.co.ziazoo.parser
       return new ChoseParser(parsers);
     }
 
-    public function re(regex:RegExp):RegExParser
+    public function re(regex:RegExp):IParser
     {
       return new RegExParser(new RegExp(regex));
     }
 
-    public function repSep(parser:Object, seperator:Object):RepSepParser
+    public function repSep(parser:Object, seperator:Object):IParser
     {
       return new RepSepParser(toParser(whitespace(parser)), toParser(whitespace(seperator)));
     }
 
-    public function whitespace(parser:Object):WhitespaceParser
+    public function whitespace(parser:Object):IParser
     {
       return new WhitespaceParser(toParser(parser));
     }

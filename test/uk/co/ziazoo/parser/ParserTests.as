@@ -11,6 +11,8 @@ package uk.co.ziazoo.parser
   import org.flexunit.asserts.assertNotNull;
   import org.flexunit.asserts.assertTrue;
 
+  import uk.co.ziazoo.parser.numeric.Operation;
+
   public class ParserTests
   {
     public function ParserTests()
@@ -20,7 +22,7 @@ package uk.co.ziazoo.parser
     [Test]
     public function parserNumericExpr():void
     {
-      var b:ParserBuilder = new ParserBuilder();
+      var b:IParserBuilder = new ParserBuilder();
 
       var value:IParser = b.either(
         b.oneOrMore(b.range("0", "9")),
@@ -62,7 +64,7 @@ package uk.co.ziazoo.parser
     [Test]
     public function helloWorld():void
     {
-      var b:ParserBuilder = new ParserBuilder();
+      var b:IParserBuilder = new ParserBuilder();
       var p:IParser = b.sequence("hello", "all", "you", "chaps");
       var r:Object = p.parse(new ParserState("hello all you chaps"));
       assertNotNull(r);
@@ -73,7 +75,7 @@ package uk.co.ziazoo.parser
     [Test]
     public function createBasicAST():void
     {
-      var b:ParserBuilder = new ParserBuilder();
+      var b:IParserBuilder = new ParserBuilder();
       var e:Extractor = new Extractor();
 
       var num:IParser = b.range("0", "9");
@@ -82,41 +84,85 @@ package uk.co.ziazoo.parser
         b.sequence(
           e.bind(num, "left"),
           "+",
-          e.bind(num, "right"));
-
-      plus.extractor = e;
+          e.bind(num, "right"))
+          .extractor(e);
 
       e.action = function(args:Object):Object
       {
-        return new PlusOperation(args.left, args.right);
+        return new Operation("+", args.left, args.right);
       };
 
       var r:Result = plus.parse(new ParserState("1 + 5"));
 
       assertNotNull(r);
       assertNotNull(r.instance);
-      assertTrue(r.instance is PlusOperation);
+      assertTrue(r.instance is Operation);
 
       assertEquals(6, r.instance.execute());
     }
+
+
+    [Test]
+    [Ignore]
+    public function createFullNumericAST():void
+    {
+      var b:IParserBuilder = new ParserBuilder();
+
+      var number:IParser = b.range("0", "9");
+      var p:Extractor = new Extractor();
+      var s:Extractor = new Extractor();
+
+
+      var value:IParser = b.either(
+        b.oneOrMore(number),
+        b.sequence(
+          "(",
+          b.future("expr"),
+          ")")
+        );
+
+      var product:IParser = b.sequence(
+        p.bind(value, "left"),
+        b.zeroOrMore(
+          b.sequence(
+            p.bind(b.either("*", "/"), "op"),
+            p.bind(value, "right")
+            )
+          )
+        );
+
+      var sum:IParser = b.sequence(
+        s.bind(product, "left"),
+        b.zeroOrMore(
+          b.sequence(
+            s.bind(b.either("+", "-"), "op"),
+            s.bind(product, "right")
+            )
+          )
+        );
+
+      s.action = p.action = function(args:Object):Object
+      {
+        return new Operation(args.op, args.left, args.right).execute();
+      };
+
+
+      var expr:IParser = b.satisfyFuture("expr", sum);
+      product.extractor(p);
+      sum.extractor(s);
+
+      var r1:Object = expr.parse(new ParserState("5*2"));
+
+      var r2:Object = expr.parse(new ParserState("5*2-7"));
+
+      assertNotNull(r1);
+      assertNotNull(r1.instance);
+      assertEquals(10, r1.instance);
+
+
+      assertNotNull(r2);
+      assertNotNull(r2.instance);
+      assertEquals(3, r2.instance);
+    }
   }
 }
-
-class PlusOperation
-{
-  private var left:Number;
-  private var right:Number;
-
-  public function PlusOperation(left:Number, right:Number)
-  {
-    this.left = left;
-    this.right = right;
-  }
-
-  public function execute():Number
-  {
-    return left + right;
-  }
-}
-
-

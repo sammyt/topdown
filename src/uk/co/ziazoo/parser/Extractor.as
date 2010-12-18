@@ -26,7 +26,11 @@ package uk.co.ziazoo.parser
 
     public function extract(args:Object):Object
     {
-      return action(cache);
+      if (action != null)
+      {
+        return action(cache);
+      }
+      return cache;
     }
   }
 }

@@ -25,7 +25,10 @@ package uk.co.ziazoo.parser
     override public function parse(parserState:ParserState):Result
     {
       var result:Result = parser.parse(parserState);
-      cache[name] = result.instance;
+      if (result.success)
+      {
+        cache[name] = result.instance;
+      }
       return result;
     }
   }
