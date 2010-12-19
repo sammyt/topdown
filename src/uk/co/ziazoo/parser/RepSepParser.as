@@ -7,10 +7,11 @@
  */
 package uk.co.ziazoo.parser
 {
-  public class RepSepParser extends AbstractParser
+  public class RepSepParser extends AbstractParser implements IParseAction
   {
     private var separator:IParser;
     private var parser:IParser;
+    private var list:Array;
 
     public function RepSepParser(parser:IParser, seperator:IParser)
     {
@@ -18,18 +19,64 @@ package uk.co.ziazoo.parser
       this.separator = seperator;
     }
 
-    override public function parseState(parserState:IParserState):Result
+    override public function parseState(state:IParserState):Result
     {
-      var composite:IParser = getComposite();
-      return composite.parseState(parserState);
+      var sepParser:IParser = getSepParser();
+      var repParser:IParser = getRepParser();
+
+      var first:Result = repParser.parseState(state);
+
+      if (!first.success)
+      {
+        return first;
+      }
+
+      var sep:Result = sepParser.parseState(state);
+      var rep:Result = repParser.parseState(state);
+
+      while (sep.success && rep.success)
+      {
+        sep = sepParser.parseState(state);
+        rep = repParser.parseState(state);
+      }
+
+      if (sep.success && !rep.success)
+      {
+        return new Fault("Separator without value");
+      }
+      return new Result(true, true, action());
     }
 
-    private function getComposite():IParser
+    private function getRepParser():IParser
     {
-      return new SequenceParser([parser,
-        new ZeroOrMoreParser(
-          new SequenceParser([separator,
-            parser]))]);
+      if (hasParseAction)
+      {
+        return parser;
+      }
+      return new InstanceListParser(parser, list);
+    }
+
+    private function getSepParser():IParser
+    {
+      if (hasParseAction)
+      {
+        return separator;
+      }
+
+      list = [];
+      return new InstanceListParser(separator, list);
+    }
+
+    public function extract():Object
+    {
+      var tmp:Array = list;
+      list = [];
+      return tmp;
+    }
+
+    override protected function get parseAction():IParseAction
+    {
+      return super.parseAction || this;
     }
   }
 }
