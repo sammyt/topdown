@@ -12,19 +12,18 @@ package uk.co.ziazoo.parser
   public class BindParser extends AbstractParser
   {
     private var parser:IParser;
-    private var cache:Dictionary;
-    private var name:String;
+    private var name:Object;
+    public var cache:Dictionary;
 
-    public function BindParser(parser:IParser, cache:Dictionary, name:String)
+    public function BindParser(parser:IParser, name:Object)
     {
       this.parser = parser;
-      this.cache = cache;
       this.name = name;
     }
 
-    override public function parse(parserState:IParserState):Result
+    override public function parseState(parserState:IParserState):Result
     {
-      var result:Result = parser.parse(parserState);
+      var result:Result = parser.parseState(parserState);
       if (result.success)
       {
         cache[name] = result.instance;

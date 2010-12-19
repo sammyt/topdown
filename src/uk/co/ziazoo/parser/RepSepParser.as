@@ -9,21 +9,27 @@ package uk.co.ziazoo.parser
 {
   public class RepSepParser extends AbstractParser
   {
-    private var seperator:IParser;
+    private var separator:IParser;
     private var parser:IParser;
 
     public function RepSepParser(parser:IParser, seperator:IParser)
     {
       this.parser = parser;
-      this.seperator = seperator;
+      this.separator = seperator;
     }
 
-    override public function parse(parserState:IParserState):Result
+    override public function parseState(parserState:IParserState):Result
+    {
+      var composite:IParser = getComposite();
+      return composite.parseState(parserState);
+    }
+
+    private function getComposite():IParser
     {
       return new SequenceParser([parser,
         new ZeroOrMoreParser(
-          new SequenceParser([seperator,
-            parser]))]).parse(parserState);
+          new SequenceParser([separator,
+            parser]))]);
     }
   }
 }

@@ -7,33 +7,56 @@
  */
 package uk.co.ziazoo.parser
 {
-  public class ZeroOrMoreParser extends AbstractParser
+  public class ZeroOrMoreParser extends AbstractParser implements IParseAction
   {
     private var parser:IParser;
+    private var list:Array;
 
     public function ZeroOrMoreParser(parser:IParser)
     {
       this.parser = parser;
     }
 
-    override public function parse(parserState:IParserState):Result
+    override public function parseState(input:IParserState):Result
     {
-      var all:Array;
-      var result:Result = parser.parse(parserState);
+      var p:IParser = getParser();
+
+      var result:Result = p.parseState(input);
+      var firstResult:Result = result;
 
       while (result.success)
       {
-        if (!all) all = [];
-
-        all.push(result.instance);
-        result = parser.parse(parserState);
+        result = p.parseState(input);
       }
 
-      if (all && all.length == 1)
+      if (firstResult.success && firstResult.producedOutput)
       {
-        return new Result(true, apply(all[0]));
+        return new Result(true, true, action());
       }
-      return new Result(true, apply(all));
+      return new Result(true, false);
+    }
+
+    private function getParser():IParser
+    {
+      if (hasParseAction)
+      {
+        return parser;
+      }
+
+      list = [];
+      return new InstanceListParser(parser, list);
+    }
+
+    public function extract():Object
+    {
+      var tmp:Array = list;
+      list = [];
+      return tmp;
+    }
+
+    override protected function get parseAction():IParseAction
+    {
+      return super.parseAction || this;
     }
   }
 }

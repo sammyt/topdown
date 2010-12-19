@@ -16,13 +16,13 @@ package uk.co.ziazoo.parser
       this.re = re;
     }
 
-    override public function parse(parserState:IParserState):Result
+    override public function parseState(parserState:IParserState):Result
     {
       var ans:Array = re.exec(parserState.subStr(parserState.len));
       if (ans && ans.length)
       {
         parserState.move(ans[0].length);
-        return new Result(true, apply(ans[0]));
+        // return new Result(true, apply(ans[0]));
       }
       // TODO: new Failure("Pattern not found");
       return new Result(false);

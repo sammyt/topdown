@@ -54,11 +54,10 @@ package uk.co.ziazoo.parser
 
       var expr:IParser = b.satisfyFuture("expr", sum);
       var input:String = "1+2+3-(4+1/5/6/(7*7))+2*3-(4/1+2*3)-4*1+2*3-4";
-      var ps:ParserState = new ParserState(input);
-      var result:Object = expr.parse(ps);
+
+      var result:Object = expr.parse(input);
 
       assertNotNull(result);
-      assertEquals(ps.index, input.length);
     }
 
     [Test]
@@ -66,7 +65,7 @@ package uk.co.ziazoo.parser
     {
       var b:IParserBuilder = new ParserBuilder();
       var p:IParser = b.sequence("hello", "all", "you", "chaps");
-      var r:Object = p.parse(new ParserState("hello all you chaps"));
+      var r:Result = p.parse("hello all you chaps");
       assertNotNull(r);
       assertTrue(r.instance is Array);
       assertEquals(4, r.instance.length);
@@ -75,24 +74,21 @@ package uk.co.ziazoo.parser
     [Test]
     public function createBasicAST():void
     {
-      var b:IParserBuilder = new ParserBuilder();
-      var e:Extractor = new Extractor();
+      var b:IParserBuilder = new MemoTableBuilder(new ParserBuilder());
+      var e:BindAction = new BindAction();
 
       var num:IParser = b.range("0", "9");
 
-      var plus:IParser =
-        b.sequence(
-          e.bind(num, "left"),
-          "+",
-          e.bind(num, "right"))
-          .extractor(e);
+      var plus:IParser = b.sequence(e.bind(num, "left"), "+", e.bind(num, "right"));
+      plus.setParseAction(e);
+
 
       e.action = function(args:Object):Object
       {
         return new Operation("+", args.left, args.right);
       };
 
-      var r:Result = plus.parse(new ParserState("1 + 5"));
+      var r:Result = plus.parse("1 + 5");
 
       assertNotNull(r);
       assertNotNull(r.instance);
@@ -103,14 +99,13 @@ package uk.co.ziazoo.parser
 
 
     [Test]
-    [Ignore]
     public function createFullNumericAST():void
     {
-      var b:IParserBuilder = new ParserBuilder();
+      var b:IParserBuilder = new MemoTableBuilder(new ParserBuilder());
 
       var number:IParser = b.range("0", "9");
-      var p:Extractor = new Extractor();
-      var s:Extractor = new Extractor();
+      var p:BindAction = new BindAction();
+      var s:BindAction = new BindAction();
 
 
       var value:IParser = b.either(
@@ -143,26 +138,38 @@ package uk.co.ziazoo.parser
 
       s.action = p.action = function(args:Object):Object
       {
-        return new Operation(args.op, args.left, args.right).execute();
+        if (args.op && args.right)
+        {
+          return new Operation(args.op, args.left, args.right).execute();
+        }
+        return args.left;
       };
 
 
       var expr:IParser = b.satisfyFuture("expr", sum);
-      product.extractor(p);
-      sum.extractor(s);
+      product.setParseAction(p);
+      sum.setParseAction(s);
 
-      var r1:Object = expr.parse(new ParserState("5*2"));
-
-      var r2:Object = expr.parse(new ParserState("5*2-7"));
+      var r1:Result = expr.parse("5*2");
 
       assertNotNull(r1);
       assertNotNull(r1.instance);
       assertEquals(10, r1.instance);
 
 
+      var r2:Result = expr.parse("5*2-7");
+
       assertNotNull(r2);
       assertNotNull(r2.instance);
       assertEquals(3, r2.instance);
+
+
+      var r3:Result = expr.parse("5*2-7+8");
+
+      assertNotNull(r3);
+      assertNotNull(r3.instance);
+      assertEquals(11, r3.instance);
+
     }
   }
 }

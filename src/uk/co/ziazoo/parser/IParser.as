@@ -13,8 +13,10 @@ package uk.co.ziazoo.parser
 
     function set id(value:String):void;
 
-    function parse(parserState:IParserState):Result;
+    function parseState(state:IParserState):Result;
 
-    function extractor(extractor:Object):IParser;
+    function setParseAction(action:Object):IParser;
+
+    function parse(input:String):Result;
   }
 }

@@ -16,7 +16,7 @@ package uk.co.ziazoo.parser
       this.parser = parser;
     }
 
-    public function parse(parserState:IParserState):Result
+    public function parseState(parserState:IParserState):Result
     {
       var memo:IMemoTable = parserState.memo;
 
@@ -28,14 +28,14 @@ package uk.co.ziazoo.parser
         return memo.getResult(id, index);
       }
 
-      var result:Result = parser.parse(parserState);
+      var result:Result = parser.parseState(parserState);
       memo.saveResult(id, index, result);
       return result;
     }
 
-    public function extractor(extractor:Object):IParser
+    public function setParseAction(extractor:Object):IParser
     {
-      return parser.extractor(extractor);
+      return parser.setParseAction(extractor);
     }
 
     public function get id():String
@@ -46,6 +46,16 @@ package uk.co.ziazoo.parser
     public function set id(value:String):void
     {
       parser.id = value;
+    }
+
+    public function parse(input:String):Result
+    {
+      return parser.parse(input);
+    }
+
+    public function scanParse(input:String):Array
+    {
+      return parser.scanParse(input);
     }
   }
 }

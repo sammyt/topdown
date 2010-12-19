@@ -18,20 +18,20 @@ package uk.co.ziazoo.parser
       this.second = second;
     }
 
-    override public function parse(parserState:IParserState):Result
+    override public function parseState(parserState:IParserState):Result
     {
-      var result:Result = first.parse(parserState);
+      var result:Result = first.parseState(parserState);
       if (result.success)
       {
-        return new Result(true, result.instance);
+        return result;
       }
       else
       {
-        result = second.parse(parserState);
+        result = second.parseState(parserState);
 
         if (result.success)
         {
-          return new Result(true, result.instance);
+          return result
         }
       }
       // TODO: call fail

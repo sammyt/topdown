@@ -16,11 +16,11 @@ package uk.co.ziazoo.parser
       this.parser = parser;
     }
 
-    override public function parse(parserState:IParserState):Result
+    override public function parseState(parserState:IParserState):Result
     {
       var all:Array = [];
 
-      var result:Result = parser.parse(parserState);
+      var result:Result = parser.parseState(parserState);
 
       if (!result.success)
       {
@@ -31,15 +31,16 @@ package uk.co.ziazoo.parser
       while (result.success)
       {
         all.push(result.instance);
-        result = parser.parse(parserState);
+        result = parser.parseState(parserState);
       }
 
       if (all.length == 1)
       {
-        return new Result(true, apply(all[0]));
+        // return new Result(true, apply(all[0]));
       }
 
-      return new Result(true, apply(all));
+      // return new Result(true, apply(all));
+      return null;
     }
   }
 }

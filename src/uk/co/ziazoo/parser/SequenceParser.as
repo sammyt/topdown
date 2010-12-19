@@ -7,40 +7,58 @@
  */
 package uk.co.ziazoo.parser
 {
-  public class SequenceParser extends AbstractParser
+  public class SequenceParser extends AbstractParser implements IParseAction
   {
     private var parsers:Array;
+    private var list:Array;
 
     public function SequenceParser(parsers:Array)
     {
       this.parsers = parsers;
     }
 
-    override public function parse(parserState:IParserState):Result
+    override public function parseState(input:IParserState):Result
     {
-      var all:Array = [];
+      for each(var parser:IParser in getParsers())
+      {
+        var result:Result = parser.parseState(input);
+
+        if (!result.success)
+        {
+          return result;
+        }
+      }
+      return new Result(true, true, action());
+    }
+
+    private function getParsers():Array
+    {
+      if (hasParseAction)
+      {
+        return parsers;
+      }
+
+      list = [];
+      var result:Array = [];
 
       for each(var parser:IParser in parsers)
       {
-        var result:Result = parser.parse(parserState);
-        if (result.success)
-        {
-          all.push(result.instance);
-        }
-        else
-        {
-          return new Result(false);
-        }
+        result.push(new InstanceListParser(parser, list));
       }
-      if (all.length == 0)
-      {
-        return new Result(false);
-      }
-      if (all.length == 1)
-      {
-        return new Result(true, apply(all[0]));
-      }
-      return new Result(true, apply(all));
+
+      return result;
+    }
+
+    public function extract():Object
+    {
+      var tmp:Array = list;
+      list = [];
+      return tmp;
+    }
+
+    override protected function get parseAction():IParseAction
+    {
+      return super.parseAction || this;
     }
   }
 }

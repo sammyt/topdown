@@ -16,15 +16,15 @@ package uk.co.ziazoo.parser
       this.parsers = parsers;
     }
 
-    override public function parse(parserState:IParserState):Result
+    override public function parseState(parserState:IParserState):Result
     {
       for each(var parser:IParser in parsers)
       {
-        var result:Result = parser.parse(parserState);
+        var result:Result = parser.parseState(parserState);
 
         if (result.success)
         {
-          return new Result(true, result.instance);
+          return result
         }
       }
       // new Failure("No options succeeded")

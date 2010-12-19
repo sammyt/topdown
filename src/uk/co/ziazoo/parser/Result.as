@@ -10,12 +10,15 @@ package uk.co.ziazoo.parser
   public class Result
   {
     public var success:Boolean = false;
+    public var producedOutput:Boolean = false;
     public var instance:Object;
+    public var failures:Array = [];
 
-    public function Result(success:Boolean = true, instance:Object = null)
+    public function Result(success:Boolean, producedOutput:Boolean = false, instance:Object = null)
     {
       this.success = success;
       this.instance = instance;
+      this.producedOutput = producedOutput;
     }
   }
 }

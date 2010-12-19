@@ -9,50 +9,37 @@ package uk.co.ziazoo.parser
 {
   public class AbstractParser implements IParser
   {
-    private var _extractor:Extractor;
+    private var _parseAction:IParseAction;
     private var _value:Object;
-    private var _callback:Function;
     private var _id:String;
 
     public function AbstractParser()
     {
     }
 
-    public function parse(parserState:IParserState):Result
+    public function parseState(state:IParserState):Result
     {
       return null;
     }
 
-    protected function apply(args:Object):Object
+    protected function action():Object
     {
       if (_value != null)
       {
         return _value;
       }
-      else if (_callback != null)
-      {
-        return _callback(args)
-      }
-      else if (_extractor != null)
-      {
-        return _extractor.extract(args);
-      }
-      return args;
+      return parseAction.extract();
     }
 
-    public function extractor(extractor:Object):IParser
+    public function setParseAction(action:Object):IParser
     {
-      if (extractor is Extractor)
+      if (action is IParseAction)
       {
-        _extractor = extractor as Extractor;
-      }
-      else if (extractor is Function)
-      {
-        _callback = extractor as Function;
+        _parseAction = action as IParseAction;
       }
       else
       {
-        _value = extractor;
+        _value = action;
       }
       return this;
     }
@@ -65,6 +52,21 @@ package uk.co.ziazoo.parser
     public function set id(value:String):void
     {
       _id = value;
+    }
+
+    public function parse(input:String):Result
+    {
+      return parseState(new ParserState(input));
+    }
+
+    protected function get parseAction():IParseAction
+    {
+      return _parseAction;
+    }
+
+    protected function get hasParseAction():Boolean
+    {
+      return _parseAction != null;
     }
   }
 }
