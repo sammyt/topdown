@@ -24,7 +24,7 @@ package uk.co.ziazoo.parser
 
     private function memorize(parser:IParser):IParser
     {
-      parser.id = "ID" + idCount++;
+      parser.id = "ID " + parser + idCount++;
       return new MemoTableParser(parser);
     }
 

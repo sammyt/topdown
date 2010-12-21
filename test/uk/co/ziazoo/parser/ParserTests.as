@@ -10,6 +10,8 @@ package uk.co.ziazoo.parser
   import org.flexunit.asserts.assertEquals;
   import org.flexunit.asserts.assertNotNull;
   import org.flexunit.asserts.assertTrue;
+  import org.hamcrest.assertThat;
+  import org.hamcrest.object.equalTo;
 
   import uk.co.ziazoo.parser.numeric.Operation;
 
@@ -19,46 +21,6 @@ package uk.co.ziazoo.parser
     {
     }
 
-    [Test]
-    public function parserNumericExpr():void
-    {
-      var b:IParserBuilder = new MemoTableBuilder(new ParserBuilder());
-
-      var value:IParser = b.chose(
-        b.oneOrMore(b.range("0", "9")),
-        b.sequence(
-          "(",
-          b.future("expr"),
-          ")")
-        );
-
-      var product:IParser = b.sequence(
-        value,
-        b.zeroOrMore(
-          b.sequence(
-            b.chose("*", "/"),
-            value
-            )
-          )
-        );
-
-      var sum:IParser = b.sequence(
-        product,
-        b.zeroOrMore(
-          b.sequence(
-            b.chose("+", "-"),
-            product
-            )
-          )
-        );
-
-      var expr:IParser = b.satisfyFuture("expr", sum);
-      var input:String = "1+2+3-(4+1/5/6/(7*7))+2*3-(4/1+2*3)-4*1+2*3-4";
-
-      var result:Object = expr.parse(input);
-
-      assertNotNull(result);
-    }
 
     [Test]
     public function helloWorld():void
@@ -75,15 +37,15 @@ package uk.co.ziazoo.parser
     public function createBasicAST():void
     {
       var b:IParserBuilder = new MemoTableBuilder(new ParserBuilder());
-      var e:BindAction = new BindAction();
+      var action:BindAction = new BindAction();
 
       var num:IParser = b.range("0", "9");
 
-      var plus:IParser = b.sequence(e.bind(num, "left"), "+", e.bind(num, "right"));
-      plus.setParseAction(e);
+      var plus:IParser = b.sequence(action.bind(num, "left"), "+", action.bind(num, "right"));
+      plus.setParseAction(action);
 
 
-      e.action = function(args:Object):Object
+      action.action = function(args:Object):Object
       {
         return new Operation("+", args.left, args.right);
       };
@@ -97,79 +59,19 @@ package uk.co.ziazoo.parser
       assertEquals(6, r.instance.execute());
     }
 
-
     [Test]
-    public function createFullNumericAST():void
+    public function basicSExp():void
     {
       var b:IParserBuilder = new MemoTableBuilder(new ParserBuilder());
 
-      var number:IParser = b.range("0", "9");
-      var p:BindAction = new BindAction();
-      var s:BindAction = new BindAction();
+      var sexp:IParser = b.chose("a", "1", b.sequence("(", b.zeroOrMore(b.future("sexp")), ")"));
+      b.satisfyFuture("sexp", sexp);
 
+      var result:Result = sexp.parse("(a(1a1a))");
 
-      var value:IParser = b.chose(
-        b.oneOrMore(number),
-        b.sequence(
-          "(",
-          b.future("expr"),
-          ")")
-        );
-
-      var product:IParser = b.sequence(
-        p.bind(value, "left"),
-        b.zeroOrMore(
-          b.sequence(
-            p.bind(b.chose("*", "/"), "op"),
-            p.bind(value, "right")
-            )
-          )
-        );
-
-      var sum:IParser = b.sequence(
-        s.bind(product, "left"),
-        b.zeroOrMore(
-          b.sequence(
-            s.bind(b.chose("+", "-"), "op"),
-            s.bind(product, "right")
-            )
-          )
-        );
-
-      s.action = p.action = function(args:Object):Object
-      {
-        if (args.op && args.right)
-        {
-          return new Operation(args.op, args.left, args.right).execute();
-        }
-        return args.left;
-      };
-
-
-      var expr:IParser = b.satisfyFuture("expr", sum);
-      product.setParseAction(p);
-      sum.setParseAction(s);
-
-      var r1:Result = expr.parse("5*2");
-
-      assertNotNull(r1);
-      assertNotNull(r1.instance);
-      assertEquals(10, r1.instance);
-
-
-      var r2:Result = expr.parse("5*2-7");
-
-      assertNotNull(r2);
-      assertNotNull(r2.instance);
-      assertEquals(3, r2.instance);
-
-
-      var r3:Result = expr.parse("5*2-7+8");
-
-      assertNotNull(r3);
-      assertNotNull(r3.instance);
-      assertEquals(11, r3.instance);
-
+      assertNotNull(result);
+      assertTrue(result.success);
+      assertThat(result.instance, equalTo(["(",["a", ["(",["1","a","1","a"],")"]],")"]));
     }
   }
 }
