@@ -15,7 +15,7 @@ package uk.co.ziazoo.parser
 
     function future(name:String):IParser;
 
-    function choice(...args):IParser;
+    function either(first:Object, second:Object):IParser;
 
     function sequence(...args):IParser;
 

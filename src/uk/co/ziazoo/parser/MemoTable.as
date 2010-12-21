@@ -36,7 +36,7 @@ package uk.co.ziazoo.parser
       {
         byId[id] = new Dictionary();
       }
-      trace("Save " + result + " for " + id + " at " + index);
+      trace("Save " + result.instance + " for " + id + " at " + index);
       byId[id][index] = result;
     }
 

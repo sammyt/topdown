@@ -30,17 +30,13 @@ package uk.co.ziazoo.parser
 
     public function future(name:String):IParser
     {
-      return futures[name] = new FutureParser();
+      futures[name] = new FutureParser();
+      return futures[name];
     }
 
-    public function choice(...args):IParser
+    public function either(first:Object, second:Object):IParser
     {
-      var parsers:Array = [];
-      for each(var p:Object in args)
-      {
-        parsers.push(whitespace(toParser(p)));
-      }
-      return new ChoiceParser(parsers);
+      return new EitherParser(toParser(first), toParser(second));
     }
 
     public function sequence(...args):IParser
@@ -60,7 +56,9 @@ package uk.co.ziazoo.parser
 
     public function satisfyFuture(name:String, parser:IParser):IParser
     {
-      return FutureParser(futures[name]).parser = parser;
+      var f:FutureParser = futures[name] as FutureParser;
+      f.target = parser;
+      return f;
     }
 
     public function terminal(chars:String):IParser
@@ -94,7 +92,7 @@ package uk.co.ziazoo.parser
 
     public function repSep(parser:Object, seperator:Object):IParser
     {
-      return new RepSepParser(toParser(whitespace(parser)), toParser(whitespace(seperator)));
+      return new RepSepParser(whitespace(parser), whitespace(seperator));
     }
 
     public function whitespace(parser:Object):IParser

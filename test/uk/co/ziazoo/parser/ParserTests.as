@@ -24,7 +24,7 @@ package uk.co.ziazoo.parser
     {
       var b:IParserBuilder = new MemoTableBuilder(new ParserBuilder());
 
-      var value:IParser = b.choice(
+      var value:IParser = b.chose(
         b.oneOrMore(b.range("0", "9")),
         b.sequence(
           "(",
@@ -36,7 +36,7 @@ package uk.co.ziazoo.parser
         value,
         b.zeroOrMore(
           b.sequence(
-            b.choice("*", "/"),
+            b.chose("*", "/"),
             value
             )
           )
@@ -46,7 +46,7 @@ package uk.co.ziazoo.parser
         product,
         b.zeroOrMore(
           b.sequence(
-            b.choice("+", "-"),
+            b.chose("+", "-"),
             product
             )
           )
@@ -108,7 +108,7 @@ package uk.co.ziazoo.parser
       var s:BindAction = new BindAction();
 
 
-      var value:IParser = b.choice(
+      var value:IParser = b.chose(
         b.oneOrMore(number),
         b.sequence(
           "(",
@@ -120,7 +120,7 @@ package uk.co.ziazoo.parser
         p.bind(value, "left"),
         b.zeroOrMore(
           b.sequence(
-            p.bind(b.choice("*", "/"), "op"),
+            p.bind(b.chose("*", "/"), "op"),
             p.bind(value, "right")
             )
           )
@@ -130,7 +130,7 @@ package uk.co.ziazoo.parser
         s.bind(product, "left"),
         b.zeroOrMore(
           b.sequence(
-            s.bind(b.choice("+", "-"), "op"),
+            s.bind(b.chose("+", "-"), "op"),
             s.bind(product, "right")
             )
           )

@@ -153,5 +153,19 @@ package uk.co.ziazoo.parser
       assertNull(result.instance);
       assertEquals(1, result.failures.length);
     }
+
+    [Test]
+    public function seqWithSeqInside():void
+    {
+      var list:IParser = b.sequence("(", b.zeroOrMore(b.future("value")), ")");
+      var value:IParser = b.chose(list, "a");
+      b.satisfyFuture("value", value);
+
+      var result:Result = list.parse("(a(a))");
+
+      assertNotNull(result);
+      assertTrue(result.success);
+      assertThat(result.instance, equalTo(["(",["a",["(","a",")"]],")"]));
+    }
   }
 }

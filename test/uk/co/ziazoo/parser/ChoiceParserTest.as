@@ -40,7 +40,7 @@ package uk.co.ziazoo.parser
         b.terminal("c"),
         b.terminal("d")
       ];
-      var parser:ChoiceParser = new ChoiceParser(parsers);
+      var parser:ChoseParser = new ChoseParser(parsers);
 
       var result:Result = parser.parse("a");
 
@@ -49,7 +49,7 @@ package uk.co.ziazoo.parser
     }
 
     [Test]
-    public function choiceWithFailt():void
+    public function choiceWithFault():void
     {
       var parsers:Array = [
         b.terminal("a"),
@@ -57,7 +57,7 @@ package uk.co.ziazoo.parser
         b.terminal("c"),
         b.terminal("d")
       ];
-      var parser:ChoiceParser = new ChoiceParser(parsers);
+      var parser:ChoseParser = new ChoseParser(parsers);
 
       var result:Result = parser.parse("f");
 

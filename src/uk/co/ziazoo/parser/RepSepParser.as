@@ -7,11 +7,10 @@
  */
 package uk.co.ziazoo.parser
 {
-  public class RepSepParser extends AbstractParser implements IParseAction
+  public class RepSepParser extends AbstractParser
   {
     private var separator:IParser;
     private var parser:IParser;
-    private var list:Array;
 
     public function RepSepParser(parser:IParser, seperator:IParser)
     {
@@ -21,8 +20,17 @@ package uk.co.ziazoo.parser
 
     override public function parseState(state:IParserState):Result
     {
-      var sepParser:IParser = getSepParser();
-      var repParser:IParser = getRepParser();
+      var list:Array;
+
+      var sepParser:IParser = separator;
+      var repParser:IParser = parser;
+
+      if (!hasParseAction)
+      {
+        list = [];
+        sepParser = new InstanceListParser(separator, list);
+        repParser = new InstanceListParser(parser, list);
+      }
 
       var first:Result = repParser.parseState(state);
 
@@ -44,39 +52,12 @@ package uk.co.ziazoo.parser
       {
         return new Fault("Separator without value");
       }
-      return new Result(true, true, action());
-    }
 
-    private function getRepParser():IParser
-    {
       if (hasParseAction)
       {
-        return parser;
+        return new Result(true, true, action());
       }
-      return new InstanceListParser(parser, list);
-    }
-
-    private function getSepParser():IParser
-    {
-      if (hasParseAction)
-      {
-        return separator;
-      }
-
-      list = [];
-      return new InstanceListParser(separator, list);
-    }
-
-    public function extract():Object
-    {
-      var tmp:Array = list;
-      list = [];
-      return tmp;
-    }
-
-    override protected function get parseAction():IParseAction
-    {
-      return super.parseAction || this;
+      return new Result(true, true, list.length == 1 ? list[0] : list);
     }
   }
 }

@@ -9,11 +9,14 @@ package uk.co.ziazoo.parser
 {
   public class ProxyParser implements IParser
   {
-    public var target:IParser;
+    private var _target:IParser;
 
-    public function ProxyParser(target:IParser)
+    public function ProxyParser(target:IParser = null)
     {
-      this.target = target;
+      if (target)
+      {
+        this.target = target;
+      }
     }
 
     public function get id():String
@@ -39,6 +42,26 @@ package uk.co.ziazoo.parser
     public function parse(input:String):Result
     {
       return target.parse(input);
+    }
+
+    public function get target():IParser
+    {
+      return _target;
+    }
+
+    public function set target(value:IParser):void
+    {
+      _target = value;
+    }
+
+    public function get name():String
+    {
+      return target.name;
+    }
+
+    public function set name(value:String):void
+    {
+      target.name = value;
     }
   }
 }

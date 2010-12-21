@@ -7,17 +7,10 @@
  */
 package uk.co.ziazoo.parser
 {
-  public class FutureParser extends AbstractParser
+  public class FutureParser extends ProxyParser
   {
-    public var parser:IParser;
-
     public function FutureParser()
     {
-    }
-
-    override public function parseState(parserState:IParserState):Result
-    {
-      return parser.parseState(parserState);
     }
   }
 }

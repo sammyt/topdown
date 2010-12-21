@@ -7,10 +7,9 @@
  */
 package uk.co.ziazoo.parser
 {
-  public class ZeroOrMoreParser extends AbstractParser implements IParseAction
+  public class ZeroOrMoreParser extends AbstractParser
   {
     private var parser:IParser;
-    private var list:Array;
 
     public function ZeroOrMoreParser(parser:IParser)
     {
@@ -19,7 +18,13 @@ package uk.co.ziazoo.parser
 
     override public function parseState(state:IParserState):Result
     {
-      var p:IParser = getParser();
+      var p:IParser = parser;
+
+      if (!hasParseAction)
+      {
+        var list:Array = [];
+        p = new InstanceListParser(parser, list);
+      }
 
       var result:Result = p.parseState(state);
       var firstResult:Result = result;
@@ -31,32 +36,13 @@ package uk.co.ziazoo.parser
 
       if (firstResult.success && firstResult.producedOutput)
       {
-        return new Result(true, true, action());
+        if (hasParseAction)
+        {
+          return new Result(true, true, action());
+        }
+        return new Result(true, true, list.length == 1 ? list[0] : list);
       }
       return new Result(true, false);
-    }
-
-    private function getParser():IParser
-    {
-      if (hasParseAction)
-      {
-        return parser;
-      }
-
-      list = [];
-      return new InstanceListParser(parser, list);
-    }
-
-    public function extract():Object
-    {
-      var tmp:Array = list;
-      list = [];
-      return tmp;
-    }
-
-    override protected function get parseAction():IParseAction
-    {
-      return super.parseAction || this;
     }
   }
 }

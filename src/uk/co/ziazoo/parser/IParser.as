@@ -13,6 +13,10 @@ package uk.co.ziazoo.parser
 
     function set id(value:String):void;
 
+    function get name():String;
+
+    function set name(value:String):void;
+
     function parseState(state:IParserState):Result;
 
     function setParseAction(action:Object):IParser;

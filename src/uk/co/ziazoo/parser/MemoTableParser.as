@@ -7,50 +7,29 @@
  */
 package uk.co.ziazoo.parser
 {
-  public class MemoTableParser implements IParser
+  public class MemoTableParser extends ProxyParser
   {
-    private var parser:IParser;
 
     public function MemoTableParser(parser:IParser)
     {
-      this.parser = parser;
+      super(parser)
     }
 
-    public function parseState(state:IParserState):Result
+    override public function parseState(state:IParserState):Result
     {
       var memo:IMemoTable = state.memo;
 
       var index:int = state.index;
-      var id:String = parser.id;
+      var id:String = target.id;
 
       if (memo.hasResult(id, index))
       {
         return memo.getResult(id, index);
       }
 
-      var result:Result = parser.parseState(state);
+      var result:Result = target.parseState(state);
       memo.saveResult(id, index, result);
       return result;
-    }
-
-    public function setParseAction(extractor:Object):IParser
-    {
-      return parser.setParseAction(extractor);
-    }
-
-    public function get id():String
-    {
-      return parser.id;
-    }
-
-    public function set id(value:String):void
-    {
-      parser.id = value;
-    }
-
-    public function parse(input:String):Result
-    {
-      return parser.parse(input);
     }
   }
 }

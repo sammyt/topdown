@@ -12,6 +12,7 @@ package uk.co.ziazoo.parser
     private var _parseAction:IParseAction;
     private var _value:Object;
     private var _id:String;
+    private var _name:String;
 
     public function AbstractParser()
     {
@@ -67,6 +68,16 @@ package uk.co.ziazoo.parser
     protected function get hasParseAction():Boolean
     {
       return _parseAction != null;
+    }
+
+    public function get name():String
+    {
+      return _name;
+    }
+
+    public function set name(value:String):void
+    {
+      _name = value;
     }
   }
 }
