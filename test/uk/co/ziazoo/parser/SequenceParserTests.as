@@ -84,15 +84,15 @@ package uk.co.ziazoo.parser
     [Test]
     public function parseWithCustomAction():void
     {
-      var a:BindAction = new BindAction();
-      var p:SequenceParser = b.sequence("one", a.bind(b.terminal("fine"), "value"), "day") as SequenceParser;
+      var action:BindAction = new BindAction();
+      var p:SequenceParser = b.sequence("one", action.bind(b.terminal("fine"), "value"), "day") as SequenceParser;
 
-      a.action = function(args:Dictionary):String
+      action.action = function(args:Dictionary):String
       {
         return args.value;
       };
 
-      p.setParseAction(a);
+      p.setParseAction(action);
 
       var result:Result = p.parse("one fine day");
 

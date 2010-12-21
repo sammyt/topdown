@@ -33,9 +33,14 @@ package uk.co.ziazoo.parser
       return futures[name] = new FutureParser();
     }
 
-    public function either(first:Object, second:Object):IParser
+    public function choice(...args):IParser
     {
-      return new EitherParser(toParser(first), toParser(second));
+      var parsers:Array = [];
+      for each(var p:Object in args)
+      {
+        parsers.push(whitespace(toParser(p)));
+      }
+      return new ChoiceParser(parsers);
     }
 
     public function sequence(...args):IParser

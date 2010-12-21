@@ -18,11 +18,11 @@ package uk.co.ziazoo.parser
       this.parser = parser;
     }
 
-    override public function parseState(parserState:IParserState):Result
+    override public function parseState(state:IParserState):Result
     {
-      p.parseState(parserState);
+      p.parseState(state);
 
-      return parser.parseState(parserState);
+      return parser.parseState(state);
     }
   }
 }

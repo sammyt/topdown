@@ -16,16 +16,16 @@ package uk.co.ziazoo.parser
       this.re = re;
     }
 
-    override public function parseState(parserState:IParserState):Result
+    override public function parseState(state:IParserState):Result
     {
-      var ans:Array = re.exec(parserState.subStr(parserState.len));
+      var ans:Array = re.exec(state.subStr(state.len));
+
       if (ans && ans.length)
       {
-        parserState.move(ans[0].length);
-        // return new Result(true, apply(ans[0]));
+        state.move(ans[0].length);
+        return new Result(true, true, ans[0]);
       }
-      // TODO: new Failure("Pattern not found");
-      return new Result(false);
+      return new Fault("Pattern not found " + re.source);
     }
   }
 }

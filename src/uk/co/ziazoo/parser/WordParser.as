@@ -16,13 +16,13 @@ package uk.co.ziazoo.parser
       this.w = w;
     }
 
-    override public function parseState(parserState:IParserState):Result
+    override public function parseState(state:IParserState):Result
     {
-      var chars:String = parserState.subStr(w.length);
+      var chars:String = state.subStr(w.length);
 
       if (chars == w)
       {
-        parserState.move(w.length);
+        state.move(w.length);
         return new Result(true, true, w);
       }
       return new Fault("Expected [" + w + "] received [" + chars + "]");

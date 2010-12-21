@@ -1,22 +1,23 @@
 /**
  * Created by IntelliJ IDEA.
  * User: sammy
- * Date: 19/12/2010
- * Time: 16:56
+ * Date: 21/12/2010
+ * Time: 10:19
  * To change this template use File | Settings | File Templates.
  */
 package uk.co.ziazoo.parser
 {
+  import org.flexunit.asserts.assertEquals;
   import org.flexunit.asserts.assertNotNull;
   import org.flexunit.asserts.assertTrue;
   import org.hamcrest.assertThat;
   import org.hamcrest.object.equalTo;
 
-  public class RepSepParserTest
+  public class OneOrMoreParserTest
   {
     private var b:IParserBuilder;
 
-    public function RepSepParserTest()
+    public function OneOrMoreParserTest()
     {
     }
 
@@ -33,15 +34,20 @@ package uk.co.ziazoo.parser
     }
 
     [Test]
-    public function commaSeparatedChars():void
+    public function parseWithResult():void
     {
-      var parser:RepSepParser = new RepSepParser(b.terminal("a"), b.terminal(","));
-      var result:Result = parser.parse("a,a,a,a");
+      var hello:IParser = b.whitespace(b.toParser("hello"));
+      var p:OneOrMoreParser = new OneOrMoreParser(hello);
+
+      var result:Result = p.parse("hello hello hello");
 
       assertNotNull(result);
-      assertNotNull(result.instance);
       assertTrue(result.success);
-      assertThat(result.instance, equalTo(["a", ",", "a", ",", "a", ",", "a"]));
+
+      var instance:Object = result.instance;
+      assertNotNull(instance);
+      assertEquals(3, instance.length);
+      assertThat(instance, equalTo(["hello", "hello", "hello"]));
     }
   }
 }

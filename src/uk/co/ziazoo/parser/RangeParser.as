@@ -25,10 +25,9 @@ package uk.co.ziazoo.parser
       {
         parserState.incr();
 
-        return new Result(true, ch);
+        return new Result(true, true, ch);
       }
-      // TODO: new Failure("Expected something between [" + start + " - " + end + "] but got" + ch);
-      return new Result(false);
+      return new Fault("Expected something between [" + start + " - " + end + "] but got" + ch);
     }
   }
 }

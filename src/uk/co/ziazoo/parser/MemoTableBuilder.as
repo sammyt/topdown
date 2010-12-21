@@ -38,9 +38,10 @@ package uk.co.ziazoo.parser
       return memorize(builder.future(name));
     }
 
-    public function either(first:Object, second:Object):IParser
+    public function choice(...args):IParser
     {
-      return memorize(builder.either(first, second));
+      var fn:Function = builder.choice;
+      return memorize(fn.apply(this, args));
     }
 
     public function sequence(... args):IParser

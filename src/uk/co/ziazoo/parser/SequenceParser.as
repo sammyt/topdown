@@ -17,11 +17,11 @@ package uk.co.ziazoo.parser
       this.parsers = parsers;
     }
 
-    override public function parseState(input:IParserState):Result
+    override public function parseState(state:IParserState):Result
     {
       for each(var parser:IParser in getParsers())
       {
-        var result:Result = parser.parseState(input);
+        var result:Result = parser.parseState(state);
 
         if (!result.success)
         {
